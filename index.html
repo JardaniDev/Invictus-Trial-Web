@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invictus Regedit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-red: #ff1a1a;
+            --dark-red: #900000;
+            --deep-black: #080808;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glow: 0 0 25px rgba(255, 26, 26, 0.4);
+            --text-main: #ffffff;
+            --text-sec: #b0b0b0;
+        }
+
+        /* --- Estilos Base --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--deep-black);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- Capas de Fondo Dinámico --- */
+        .bg-wrapper {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -5;
+            background: radial-gradient(circle at center, #1a0000 0%, #050505 100%);
+        }
+
+        .blob {
+            position: fixed; width: 500px; height: 500px; background: var(--primary-red);
+            filter: blur(160px); opacity: 0.08; border-radius: 50%; z-index: -4;
+            animation: moveBlobs 20s infinite alternate;
+        }
+
+        @keyframes moveBlobs {
+            0% { transform: translate(-10%, -10%); }
+            100% { transform: translate(60%, 40%); }
+        }
+
+        /* --- Navegación --- */
+        nav {
+            position: fixed; top: 0; width: 100%; padding: 15px 6%;
+            background: rgba(8, 8, 8, 0.85); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex; justify-content: space-between; align-items: center; z-index: 1000;
+        }
+
+        .nav-brand { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 1.4rem; letter-spacing: 2px; }
+        .nav-brand span { color: var(--primary-red); text-shadow: var(--glow); }
+
+        .nav-links { display: flex; gap: 35px; list-style: none; }
+        .nav-links a { 
+            text-decoration: none; color: var(--text-sec); font-size: 0.8rem; 
+            font-weight: 700; text-transform: uppercase; transition: 0.3s;
+            position: relative;
+        }
+        .nav-links a:hover { color: var(--primary-red); }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px;
+            background: var(--primary-red); transition: 0.3s;
+        }
+        .nav-links a:hover::after { width: 100%; }
+
+        /* --- Secciones Globales --- */
+        section {
+            min-height: 100vh; padding: 120px 8%; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; opacity: 0; transform: translateY(50px);
+            transition: 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        section.visible { opacity: 1; transform: translateY(0); }
+
+        .title-container { text-align: center; margin-bottom: 60px; }
+        .title-container h2 { 
+            font-family: 'Orbitron', sans-serif; font-size: 3rem; text-transform: uppercase;
+            letter-spacing: 5px; position: relative; display: inline-block;
+        }
+        .title-container h2::before {
+            content: ''; position: absolute; bottom: -10px; left: 0; width: 60%;
+            height: 4px; background: var(--primary-red); box-shadow: var(--glow);
+        }
+
+        /* --- Glassmorphism UI Elements --- */
+        .glass-panel {
+            background: var(--glass-bg); backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border); border-radius: 25px;
+            padding: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            transition: 0.4s;
+        }
+        .glass-panel:hover { border-color: rgba(255, 26, 26, 0.4); transform: translateY(-5px); }
+
+        /* --- SECCIÓN 1: EMPRESA --- */
+        .company-grid {
+            display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px; width: 100%; max-width: 1300px;
+        }
+
+        .company-info-box { display: flex; flex-direction: column; gap: 20px; }
+        .company-logo-large { 
+            width: 140px; filter: drop-shadow(var(--glow)); 
+            animation: floatLogo 4s infinite ease-in-out;
+        }
+
+        @keyframes floatLogo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        .stats-viz {
+            display: flex; gap: 20px; align-items: flex-end; height: 200px; margin-top: 20px;
+        }
+        .bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .bar { 
+            width: 100%; background: linear-gradient(to top, var(--dark-red), var(--primary-red));
+            border-radius: 8px 8px 0 0; position: relative; transition: 1.5s ease; height: 0;
+        }
+        .bar span { font-size: 0.7rem; font-weight: 700; color: var(--text-sec); }
+
+        .social-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
+        .social-card-btn {
+            display: flex; align-items: center; gap: 15px; padding: 15px;
+            background: rgba(255,255,255,0.05); border-radius: 12px; text-decoration: none;
+            color: white; border: 1px solid transparent; transition: 0.3s;
+        }
+        .social-card-btn:hover { border-color: var(--primary-red); background: rgba(255,0,0,0.1); }
+        .social-card-btn i { font-size: 1.5rem; }
+
+        /* --- SECCIÓN 2: DESARROLLADOR --- */
+        .dev-container {
+            display: grid; grid-template-columns: 350px 1fr; gap: 50px;
+            width: 100%; max-width: 1200px;
+        }
+
+        .dev-sidebar { text-align: center; }
+        .dev-logo-circle {
+            width: 250px; height: 250px; border-radius: 50%;
+            border: 3px solid var(--primary-red); margin: 0 auto 30px;
+            display: flex; align-items: center; justify-content: center;
+            background: radial-gradient(circle, #200000 0%, #080808 100%);
+            box-shadow: var(--glow); position: relative;
+            overflow: hidden;
+        }
+        .dev-logo-circle img { width: 100%; height: 100%; object-fit: cover; }
+        .dev-logo-circle::after {
+            content: 'ONLINE'; position: absolute; bottom: 15px; right: 25px;
+            background: #00ff00; padding: 4px 12px; border-radius: 20px;
+            font-size: 0.6rem; font-weight: 900; color: black;
+        }
+
+        .tech-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+        .tag { padding: 5px 15px; background: rgba(255,0,0,0.1); border: 1px solid var(--primary-red); border-radius: 50px; font-size: 0.7rem; font-weight: 700; }
+
+        /* --- SECCIÓN 3: TRIAL --- */
+        .trial-benefits {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px;
+            width: 100%; max-width: 1200px; margin-bottom: 50px;
+        }
+        .benefit-card { text-align: center; }
+        .benefit-card i { font-size: 2.5rem; color: var(--primary-red); margin-bottom: 15px; text-shadow: var(--glow); }
+
+        .dl-portal {
+            width: 100%; max-width: 900px; border: 2px solid var(--primary-red);
+            background: linear-gradient(145deg, rgba(20,0,0,0.4), rgba(5,5,5,0.9));
+            text-align: center; padding: 60px; border-radius: 30px; position: relative; overflow: hidden;
+        }
+        .dl-portal::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(transparent, transparent, var(--primary-red), transparent);
+            animation: rotateBorder 6s linear infinite; z-index: -1; opacity: 0.2;
+        }
+        @keyframes rotateBorder { 100% { transform: rotate(360deg); } }
+
+        .big-btn {
+            padding: 22px 60px; font-size: 1.2rem; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 3px; border: none;
+            border-radius: 50px; cursor: pointer; transition: 0.4s;
+            background: white; color: black; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: inline-block; text-decoration: none;
+        }
+        .big-btn:hover { transform: scale(1.05) translateY(-5px); background: var(--primary-red); color: white; box-shadow: var(--glow); }
+
+        footer { padding: 60px; border-top: 1px solid var(--glass-border); text-align: center; background: #040404; }
+
+        @media (max-width: 1024px) {
+            .company-grid, .dev-container, .trial-benefits { grid-template-columns: 1fr; }
+            .dev-sidebar { display: flex; flex-direction: column; align-items: center; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-wrapper"></div>
+    <div class="blob"></div>
+    <div class="blob" style="animation-delay: -10s; background: #400000; right: 0;"></div>
+
+    <nav>
+        <div class="nav-brand">INVICTUS <span>REGEDIT</span></div>
+        <ul class="nav-links">
+            <li><a href="#empresa">Corporación</a></li>
+            <li><a href="#dev">Software Dev</a></li>
+            <li><a href="#trial">Acceso Trial</a></li>
+        </ul>
+    </nav>
+
+    <section id="empresa">
+        <div class="title-container">
+            <h2>Sobre <span>nosotros</span></h2>
+        </div>
+        <div class="company-grid">
+            <div class="glass-panel company-info-box">
+                <img src="multimedia/invictusregedit.png" class="company-logo-large" alt="Invictus Logo">
+                
+                <p class="card-p" style="color: var(--text-main); font-size: 1rem;">
+                    Invictus Regedit es una marca especializada en la optimización de jugabilidad para Free Fire, ofreciendo productos Regedit diseñados para brindar a los jugadores una experiencia competitiva, eficaz y mejoras notable.
+                    <br><br>
+                    Con 5 años en el mercado de experiencia y con alrededor de 3,000 clientes, en Invictus Regedit nos enfocamos en apoyar a cada jugador para que alcance su máximo potencial, disfrutando de partidas con mejor rendimiento y una jugabilidad más estable.
+                </p>
+
+                <a href="https://invictusregedit.com/" class="big-btn" style="background: var(--primary-red); color: white; margin: 15px 0; text-align: center;">
+                    <i class="fas fa-shopping-cart"></i> Visitar Tienda Oficial
+                </a>
+                
+                <h4 style="text-transform: uppercase; font-size: 0.8rem; letter-spacing: 2px; margin-top: 10px;">Redes Oficiales Empresa</h4>
+                <div class="social-row">
+                    <a href="#" class="social-card-btn"><i class="fab fa-instagram" style="color: #e1306c;"></i> Instagram</a>
+                    <a href="#" class="social-card-btn"><i class="fab fa-discord" style="color: #5865F2;"></i> Discord</a>
+                    <a href="#" class="social-card-btn"><i class="fab fa-tiktok"></i> TikTok</a>
+                    <a href="#" class="social-card-btn"><i class="fab fa-youtube" style="color: #ff0000;"></i> YouTube</a>
+                </div>
+            </div>
+
+            <div class="glass-panel" style="display: flex; flex-direction: column; justify-content: center;">
+                <h3 style="font-family: 'Orbitron'; margin-bottom: 20px;">MARKET <span>ANALYSIS</span></h3>
+                <p style="font-size: 0.8rem; color: var(--text-sec); margin-bottom: 30px;">Impacto global y crecimiento en 5 años de trayectoria.</p>
+                
+                <div class="stats-viz">
+                    <div class="bar-wrap"><span>400</span><div class="bar" style="height: 15%;"></div><span>2021</span></div>
+                    <div class="bar-wrap"><span>1.2k</span><div class="bar" style="height: 40%;"></div><span>2023</span></div>
+                    <div class="bar-wrap"><span>2.1k</span><div class="bar" style="height: 65%;"></div><span>2025</span></div>
+                    <div class="bar-wrap"><span style="color: var(--primary-red);">3k+</span><div class="bar" style="height: 100%;"></div><span>HOY</span></div>
+                </div>
+                
+                <div style="margin-top: 40px; border-top: 1px solid var(--glass-border); padding-top: 20px;">
+                    <p style="font-size: 0.9rem; font-weight: 700;">PROYECTO: <span style="color: var(--primary-red);">VERIFICADO</span></p>
+                    <p style="font-size: 0.7rem; color: var(--text-sec);">Seguridad anti-ban y estabilidad garantizada.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="dev">
+        <div class="title-container">
+            <h2>Developer <span>Software</span></h2>
+        </div>
+        <div class="dev-container">
+            <div class="dev-sidebar">
+                <div class="dev-logo-circle">
+                    <img src="multimedia/dev.jpeg" alt="Jardani Maksimov">
+                </div>
+                <h3 style="font-family: 'Orbitron'; font-size: 1.5rem;">JARDANI.NET</h3>
+                <div class="tech-tags">
+                    <span class="tag">FullStack</span>
+                    <span class="tag">Security Expert</span>
+                    <span class="tag">C# / C++</span>
+                    <span class="tag">UI/UX Designer</span>
+                </div>
+                <div class="social-row" style="grid-template-columns: 1fr; margin-top: 30px; gap: 10px;">
+                    <a href="#" class="social-card-btn"><i class="fab fa-youtube" style="color: #ff0000;"></i> YouTube Dev</a>
+                    <a href="#" class="social-card-btn"><i class="fab fa-instagram" style="color: #e1306c;"></i> Instagram Dev</a>
+                    <a href="#" class="social-card-btn"><i class="fab fa-github"></i> GitHub</a>
+                </div>
+            </div>
+
+            <div class="glass-panel">
+                <h2 style="font-size: 2.2rem; font-weight: 900; margin-bottom: 20px;">Jardani Maksimov</h2>
+                <p style="font-size: 1rem; color: var(--text-sec); margin-bottom: 25px;">
+                    Soy desarrollador FullStack y desarrollador principal de software en Invictus Regedit, donde combinó logica, seguridad y conocimiento para crear los Regedit de Free Fire más avanzados y efectivos del mercado.
+                </p>
+                <p style="color: var(--text-sec); font-size: 0.95rem; background: rgba(0,0,0,0.3); padding: 25px; border-radius: 15px; border-left: 4px solid var(--primary-red);">
+                    Dentro de Invictus Regedit, soy responsable del diseño, arquitectura y desarrollo completo de la aplicación, así como de la integración con su ecosistema principal. Además, gestiono la implementación de sistemas de seguridad, protección de datos y estabilidad del software, garantizando una experiencia confiable y optimizada para los usuarios.
+                    <br><br>
+                    Mi enfoque combina lógica, innovación y precisión técnica para construir herramientas de alto nivel, manteniendo siempre estándares elevados en rendimiento, eficiencia y calidad.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="trial">
+        <div class="title-container">
+            <h2>Free <span>Access</span></h2>
+        </div>
+        
+        <div class="trial-benefits">
+            <div class="glass-panel benefit-card">
+                <i class="fas fa-bolt"></i>
+                <h3>Speed Test</h3>
+                <p style="font-size: 0.8rem; color: var(--text-sec);">Prueba la respuesta inmediata de nuestros algoritmos de optimización.</p>
+            </div>
+            <div class="glass-panel benefit-card">
+                <i class="fas fa-shield-virus"></i>
+                <h3>Safe Engine</h3>
+                <p style="font-size: 0.8rem; color: var(--text-sec);">Verifica la compatibilidad y seguridad del software en tu dispositivo.</p>
+            </div>
+            <div class="glass-panel benefit-card">
+                <i class="fas fa-crosshairs"></i>
+                <h3>Precision</h3>
+                <p style="font-size: 0.8rem; color: var(--text-sec);">Siente la diferencia en la sensibilidad básica del sistema.</p>
+            </div>
+        </div>
+
+        <div class="dl-portal">
+            <h2 style="font-family: 'Orbitron'; font-size: 2.5rem; margin-bottom: 20px;">DESCARGAR <span>TRIAL</span></h2>
+            <div style="background: rgba(255,255,255,0.03); padding: 30px; border-radius: 20px; border: 1px dashed var(--primary-red); margin-bottom: 40px;">
+                <p style="font-size: 0.9rem; text-align: left; color: #fff;">
+                    Esta aplicación corresponde a una versión de prueba gratuita, la cual ofrece aproximadamente el 10% de las funciones y rendimiento disponibles en la versión completa de pago. Su propósito es permitir al usuario conocer el funcionamiento general del sistema antes de realizar la compra.
+                    <br><br>
+                    Para desbloquear todas las funciones, obtener mayor eficiencia, estabilidad y rendimiento óptimo, se recomienda adquirir la versión de paga mediante el botón de compra oficial indicado dentro de la aplicación.
+                </p>
+            </div>
+            <a href="#" class="big-btn">Descargar Prueba</a>
+            <p style="margin-top: 20px; font-size: 0.7rem; color: var(--text-sec);">Versión actual: v1.4.0-Trial | Firmado por: Jardani.NET</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="nav-brand" style="margin-bottom: 20px;">INVICTUS <span>REGEDIT</span></div>
+        <p style="font-size: 0.8rem; color: #444;">&copy; 2026 Invictus Regedit. Todos los derechos reservados.</p>
+        <p style="font-size: 0.7rem; color: #333; margin-top: 10px;">Desarrollado con precisión quirúrgica por Jardani.NET</p>
+    </footer>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('section').forEach(section => observer.observe(section));
+    </script>
+</body>
+</html>
